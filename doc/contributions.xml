@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Appendix><Heading>Contributions</Heading>
+<Appendix Label="ap:contrib"><Heading>Contributions</Heading>
 
-Sebastian Gutsche helped in the implementation of inference of properties from already known properties. Max Horn adapted the definition of the objects numerical and affine semigroups; the behave like lists of integers or lists of lists of integers (affine case), and one can intersect numerical semigroups with lists of integers, or affine semigroup with cartesian products of lists of integers. 
+Sebastian Gutsche helped in the implementation of inference of properties from already known properties, and also with the integration of 4ti2Interface. Max Horn adapted the definition of the objects numerical and affine semigroups; the behave like lists of integers or lists of lists of integers (affine case), and one can intersect numerical semigroups with lists of integers, or affine semigroup with cartesian products of lists of integers. 
 
 <Section><Heading>Functions implemented by A. Sammartano</Heading>
 
@@ -48,7 +48,7 @@ A. Sammartano implemented the following functions.
 
 <Section><Heading>Functions implemented by C. O'Neill</Heading>
 
-C. O'Neill implemented the following functions described in <Cite Key="B-P-ON"></Cite>:
+Chris implemented the following functions described in <Cite Key="B-P-ON"></Cite>:
 
 <P/>
 <Ref Func="OmegaPrimalityOfElementListInNumericalSemigroup"/>,
@@ -76,6 +76,11 @@ C. O'Neill implemented the following functions described in <Cite Key="B-P-ON"><
 <P/>
 <Ref Func="DeltaSetOfAffineSemigroup"/>.
 
+Also he implemented the new version of 
+
+<P/>
+<Ref Func="AperyListOfNumericalSemigroupWRTElement"/>.
+
 
 </Section>
 
@@ -87,7 +92,7 @@ Klara Stokes helped with the implementation of functions related to patterns for
 
 <Section><Heading>Functions implemented by I. Ojeda and C. J. Moreno Ávila</Heading>
 
-Ignacio and Carlos Jesús implemented the algorithms given in <Cite Key="Roune"></Cite> and <Cite Key="MC-O-T"></Cite> for the calculation of the Frobenius number and Apéry set of a numerical semigroup using Gröbner basis calculations. These methods will be used if 4ti2 is loaded (either 4ti2Interface or 4ti2gap). A faster algorithm is employed provided that singular is loaded.
+Ignacio and Carlos Jesús implemented the algorithms given in <Cite Key="Roune"></Cite> and <Cite Key="MC-O-T"></Cite> for the calculation of the Frobenius number and Apéry set of a numerical semigroup using Gröbner basis calculations. Since the new implementation by Chris was included, these algorithms are no longer used.
 </Section>
 
 
@@ -99,9 +104,15 @@ Ignacio also implemented the following functions.
 <P/>
 <Ref Func="AlmostSymmetricNumericalSemigroupsWithFrobeniusNumberAndType"/>,
 <P/>
-Ignacio also implemented the new version of 
+<Ref Func="NumericalSemigroupsWithFrobeniusNumberAndMultiplicity"/>,
+<P/>
+<Ref Func="IrreducibleNumericalSemigroupsWithFrobeniusNumberAndMultiplicity"/>.
+<P/>
+Ignacio also implemented the new versions of 
 <P/>
 <Ref Func="AlmostSymmetricNumericalSemigroupsWithFrobeniusNumber"/>,
+<P/>
+<Ref Func="NumericalSemigroupsWithFrobeniusNumber"/>,
 
 </Section>
 
@@ -202,6 +213,40 @@ He also helped in preliminary versions of the following functions.
 
 <Section><Heading>Functions implemented by N. Matsuoka</Heading>
   Naoyuki implemented the function associated to the generalized Gorenstein property, see Section <Ref Sect="sc:generalized-gorenstein"/>.
+
+</Section>
+
+
+<Section><Heading>Functions implemented by N. Maugeri</Heading>
+  Nicola fixed the implementation of  <Ref Func="ArfGoodSemigroupClosure"/>.
+
+  He also implemented 
+
+  <P/>
+  <Ref Func="ProjectionOfAGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="GenusOfGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="LengthOfGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="AperySetOfGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="StratifiedAperySetOfGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="AbsoluteIrreduciblesOfGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="TracksOfGoodSemigroup"/>,
+
+  <P/>
+  <Ref Func="RandomGoodSemigroupWithFixedMultiplicity"/>.
+
+  And the multiplicity and local property for good semigroups.
 
 </Section>
 

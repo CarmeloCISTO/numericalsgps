@@ -5,8 +5,6 @@
 #W                          Jose Morais <josejoao@fc.up.pt>
 ##
 ##
-#H  @(#)$Id: read.g,v 1.1.10 $
-##
 #Y  Copyright 2005 by Manuel Delgado,
 #Y  Pedro A. Garcia-Sanchez and Jose Joao Morais
 #Y  We adopt the copyright regulations of GAP as detailed in the
@@ -51,7 +49,7 @@ ReadPackage( "numericalsgps", "gap/affine.gi" );
 ##
 ## obsolet
 ##
-ReadPackage( "numericalsgps", "gap/obsolet.gi" );
+#ReadPackage( "numericalsgps", "gap/obsolet.gi" );
 ##
 ## dot
 ##
@@ -66,12 +64,12 @@ if NumSgpsCanUseNI then
 fi;
 if NumSgpsCanUse4ti2 then
     ReadPackage("numericalsgps", "gap/affine-extra-4ti2.gi");
-    ReadPackage("numericalsgps", "gap/frobenius-extra-4ti2i.gi");
+    #ReadPackage("numericalsgps", "gap/frobenius-extra-4ti2i.gi");
     Info(InfoNumSgps,1,"Loaded interface to 4ti2 (4ti2Interface)");
 fi;
 if NumSgpsCanUse4ti2gap then
     ReadPackage("numericalsgps", "gap/affine-extra-4ti2gap.gi");
-    ReadPackage("numericalsgps", "gap/frobenius-extra-4ti2gap.gi");
+    #ReadPackage("numericalsgps", "gap/frobenius-extra-4ti2gap.gi");
     Info(InfoNumSgps,1,"Loaded interface to 4ti2 (4ti2gap)");
 fi;
 if not(NumSgpsCanUseNI or NumSgpsCanUse4ti2 or NumSgpsCanUse4ti2gap) then
@@ -92,9 +90,9 @@ else
         ReadPackage( "numericalsgps", "gap/polynomials-extra-s.gi" );
         Info(InfoNumSgps,1,"Loaded interface to Singular (Singular)");
         #GBASIS:= SINGULARGBASIS;
-        if NumSgpsCanUse4ti2 then
-          ReadPackage("numericalsgps","gap/apery-extra-4ti2i-sing.gi");
-        fi;
+        # if NumSgpsCanUse4ti2 then
+        #   ReadPackage("numericalsgps","gap/apery-extra-4ti2i-sing.gi");
+        # fi;
         NumSgpsWarnUseSingular:=false;
     else
         if NumSgpsCanUseGradedModules then

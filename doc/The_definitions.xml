@@ -13,7 +13,7 @@
                     <Attr Name="Multiplicity" Arg="NS" Label="for numerical semigroup"/>
                     <Attr Name="MultiplicityOfNumericalSemigroup" Arg="NS"/>
                     <Description>
-                        <A>NS</A> is a numerical semigroup. Returns the multiplicity of <A>NS</A>, which is the smallest positive integer belonging to <A>NS</A>.
+                        <A>NS</A> is a numerical semigroup. Returns the multiplicity of <A>NS</A>, which is the smallest positive integer belonging to <A>NS</A>. Depending on the information known about <A>NS</A> different methods are implemented. There are methods for the following cases: generators are known, Apéry set is known, it is a modular numerical semigroup, or it is proportionally modular (and thus is defined by a closed interval <Cite Key="RosalesVasco2008MIA"/>).
                         <Example><![CDATA[
 gap> NumericalSemigroup(3,5);
 <Numerical semigroup with 2 generators>
@@ -51,8 +51,9 @@ The function has 1 to 3 arguments. One of them a numerical semigroup. Then an ar
                         <C>MinimalGeneratingSystemOfNumericalSemigroup</C>
                         returns the minimal set of generators of <C>S</C>.
 			The shorter names <C>MinimalGenerators</C> or <C>MinimalGeneratingSystem</C> may be used.
-<P/>
-From Version 0.980, <C>ReducedSetOfGeneratorsOfNumericalSemigroup</C> is a synonym of <C>MinimalGeneratingSystemOfNumericalSemigroup</C>; <C>GeneratorsOfNumericalSemigroupNC</C> is a synonym of <C>GeneratorsOfNumericalSemigroup</C>. The names are kept for compatibility with code produced for previous versions, but will be removed in the future.  
+			<P/>
+			<!--
+From Version 0.980, <C>ReducedSetOfGeneratorsOfNumericalSemigroup</C> is a synonym of <C>MinimalGeneratingSystemOfNumericalSemigroup</C>; <C>GeneratorsOfNumericalSemigroupNC</C> is a synonym of <C>GeneratorsOfNumericalSemigroup</C>. The names are kept for compatibility with code produced for previous versions, but will be removed in the future.  -->
 
                         <Example><![CDATA[
 gap> S := NumericalSemigroup("modular", 5,53);
@@ -120,6 +121,18 @@ gap> SmallElements(NumericalSemigroup(3,5,7));
 [ 0, 3, 5 ]
 gap> SmallElementsOfNumericalSemigroup(NumericalSemigroup(3,5,7));
 [ 0, 3, 5 ]
+]]></Example>
+                    </Description>
+                </ManSection>
+		
+                <ManSection>
+                    <Attr Name="Length" Arg="NS" Label="for numerical semigroup"/>
+                    <Description>
+                        <C>NS</C>
+                        is a numerical semigroup. It returns the number of small elements of <C>NS</C> below the conductor. This corresponds with the length of the semigroup ring modulo the conductor ideal. See also <Ref Func="LengthOfGoodSemigroup"/>.
+                        <Example><![CDATA[
+gap> Length(NumericalSemigroup(3,5,7));
+2
 ]]></Example>
                     </Description>
                 </ManSection>

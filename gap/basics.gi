@@ -24,14 +24,14 @@ InstallMethod(MultiplicityOfNumericalSemigroup,
         "Returns the multiplicity of a numerical semigroup",
         [IsNumericalSemigroup and HasGenerators],10,
         function(S)
-    return GeneratorsOfNumericalSemigroup(S)[1];
+    return Minimum(GeneratorsOfNumericalSemigroup(S));
 end);
 
 InstallMethod(MultiplicityOfNumericalSemigroup,
         "Returns the multiplicity of a numerical semigroup",
         [IsNumericalSemigroup and HasAperyList],1,
         function(S)
-    return Minimum(Difference(S!.aperylist,[0]),Length(S!.aperylist));
+    return Length(S!.aperylist);
 end);
 
 InstallMethod(MultiplicityOfNumericalSemigroup,
@@ -126,14 +126,14 @@ InstallMethod(FrobeniusNumberOfNumericalSemigroup,
   if Gaps(S) = [] then
     return -1;
   fi;
-  return(Gaps(S)[Length(Gaps(S))]);
+  return(Maximum(Gaps(S)));
 end);
 
 InstallMethod(FrobeniusNumberOfNumericalSemigroup,
         "Returns the Frobenius Number of the numerical sgp",
         [IsNumericalSemigroup and HasSmallElements],99,
         function(S)
-    return(SmallElements(S)[Length(SmallElements(S))] - 1);
+    return(Maximum(SmallElements(S)) - 1);
 end);
 InstallMethod(FrobeniusNumberOfNumericalSemigroup,
         "Returns the Frobenius Number of the numerical sgp",
@@ -149,13 +149,11 @@ InstallMethod(FrobeniusNumberOfNumericalSemigroup,
         [IsNumericalSemigroup],
         function(S)
   local  set, len, min_mult_n3_in_n1n2, gens, n, C, gg, c, n1, n2, n3, c1, 
-         c2, c3, delta, d, gn, og, newgens;
+         c2, c3, delta, d, gn, og, newgens, ap;
 
-    if not (HasMinimalGenerators(S) or HasGenerators(S)) then
-        set := SmallElementsOfNumericalSemigroup(S);
-        len := Length(set);
-        return(set[len] - 1);
-    fi;
+  if not (HasMinimalGenerators(S) or HasGenerators(S)) then
+    return(Maximum(SmallElementsOfNumericalSemigroup(S))-1);
+  fi;
     ## Local Functions
     ##############################################################
     ## Rosales&Vasco
@@ -176,8 +174,6 @@ InstallMethod(FrobeniusNumberOfNumericalSemigroup,
     ##############################################################
     gens := MinimalGeneratingSystemOfNumericalSemigroup(S);
     n := Length(gens);
-#    C := Combinations(gens,n-1);
-#    gg := First(C,c -> Gcd(c)<>1);
     C := IteratorOfCombinations(gens,n-1);
     gg := fail;
     
@@ -202,9 +198,8 @@ InstallMethod(FrobeniusNumberOfNumericalSemigroup,
 
             return ((c1-2)*n1+(c2-2)*n2+(c3-2)*n3+delta)/2;
         else
-            set := SmallElementsOfNumericalSemigroup(S);
-            len := Length(set);
-            return(set[len] - 1);
+            ap := AperyList(S);
+            return Maximum(ap)-Length(ap);;
 
         fi;
     fi;
@@ -226,7 +221,7 @@ end);
 #The algorithm used here was obtained by Rosales&Vasco
 InstallMethod(FrobeniusNumberOfNumericalSemigroup,
         "Returns the Frobenius Number of the numerical sgp",
-        [IsNumericalSemigroup and IsModularNumericalSemigroup],
+        [IsNumericalSemigroup and IsModularNumericalSemigroup],1,
         function(S)
     local   a,  b,  r,  s,  ns,  m;
 
@@ -246,7 +241,7 @@ end);
 #The algorithm used here was obtained by Delgado&Rosales
 InstallMethod(FrobeniusNumberOfNumericalSemigroup,
         "Returns the Frobenius Number of the numerical sgp",
-        [IsNumericalSemigroup and HasProportionallyModularConditionNS],
+        [IsNumericalSemigroup and HasProportionallyModularConditionNS],1,
         function(S)
     local   a,  b,  c,  j;
 
@@ -552,7 +547,7 @@ InstallMethod( BelongsToNumericalSemigroup,
         return true;
     fi;
     s := SmallElements(S);
-    return (n in s) or (n >= s[Length(s)]);
+    return (n in s) or (n >= Maximum(s));
 end);
 
 InstallMethod( BelongsToNumericalSemigroup,
@@ -650,6 +645,9 @@ InstallMethod( BelongsToNumericalSemigroup,
     if HasMinimalGenerators(S) then
         gen := MinimalGenerators(S);
         ed:=Length(gen);
+        if ed=1 then 
+            return n>=0;
+        fi;
         # some konwn bounds for Frobenius number can be used
         # Selmer's, Erdos-Graham, Schur
         if n>Minimum([2*gen[ed]*Int(gen[1]/ed)-gen[1], 2*gen[ed-1]*Int(gen[ed]/ed)-gen[ed], (gen[1]-1)*(gen[ed]-1)-1] ) then
@@ -710,7 +708,7 @@ InstallMethod( BelongsToNumericalSemigroup,
     fi;
     m := MultiplicityOfNumericalSemigroup(S);
     ap := AperyListOfNumericalSemigroupWRTElement(S,m);
-    if First([1..m], i-> (n mod m = i-1) and n >= ap[i]) <> fail then
+    if ForAny([1..m], i-> (n mod m = i-1) and n >= ap[i]) then
         return true;
     else
         return false;
@@ -721,36 +719,57 @@ end);
 
 #############################################################################
 ##
-#O  AperyListOfNumericalSemigroupWRTElement(S,n)
+#O  AperyListOfNumericalSemigroupWRTElement(s,m)
 ##
 ##  Returns the Apery list of the numerical
-##  semigroup S with respect to n.
-##
+##  semigroup s with respect to m.
+##  This version is by Chris O'Neill 
 #############################################################################
 InstallMethod( AperyListOfNumericalSemigroupWRTElement,
         "returns the Apery list of a  numerical semigroup with respect to a nonzero element of the semigroup",
         true,
         [IsNumericalSemigroup,IsInt],
-        function(S,n)
-    local   Ap,  f,  max,  i;
+        function(s,m)
+	local  msg, nonmults, ret, g, curround, nextround, a;
 
-    #    if IsBound(S!.aperylist) and Length(S!.aperylist) = n then
-    #        return S!.aperylist;
-    #    elif not BelongsToNumericalSemigroup(n,S) then
-    if not BelongsToNumericalSemigroup(n,S) then
-        Error("The second argument  must be an element of the first argument in AperyListOfNumericalSemigroupWRTElement");
+    if not BelongsToNumericalSemigroup(m,s) then
+        Error("The second argument  must be an element of the first argument");
     else
-        Ap := [0];
-        f := FrobeniusNumberOfNumericalSemigroup(S);
-        max := f + n; #see proposition 10.4 (book)
-        for i in [1..n-1] do
-            Add(Ap, First(Difference([1..max],GapsOfNumericalSemigroup(S)), j -> j mod n = i));
+        msg := MinimalGeneratingSystemOfNumericalSemigroup(s);
+        nonmults := Difference(msg,[m]);
+        ret := ListWithIdenticalEntries(m,infinity);
+
+        ret[1] := 0;
+        for g in nonmults do
+            ret[(g mod m)+1] := g;
         od;
-        if n =MultiplicityOfNumericalSemigroup(S) then
-            SetAperyList(S, Ap); #
+
+        curround := List(nonmults);
+
+        while curround <> []  do
+            nextround := [];
+
+            for a in curround do
+                if ret[(a mod m)+1] <> a then
+                continue;
+                fi;
+
+                for g in nonmults do
+                if g + a < ret[((g + a) mod m)+1] then
+                    ret[((g + a) mod m)+1] := g + a;
+                    Append(nextround, [g + a]);
+                fi;
+                od;
+            od;
+
+            curround := nextround;
+        od;
+        
+        if m =MultiplicityOfNumericalSemigroup(s) then
+            SetAperyList(s, ret); #
         fi;
     fi;
-    return ShallowCopy(Ap);
+    return ShallowCopy(ret);
 end);
 
 #############################################################################

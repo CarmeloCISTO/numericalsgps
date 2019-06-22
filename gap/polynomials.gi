@@ -1120,27 +1120,13 @@ end);
 ##################################################################
 InstallGlobalFunction(GeneratorsModule_Global, function(Al,M)
 
-local S, gens, gM, a, b, da, db, i, j, rs, rd, rel, fcta, fctb, C, pair, reduction, n, reduce,  A, R, ker, t;
+local S, gens, gM, a, b, da, db, i, j, rs, rd, rel, fcta, fctb, C, pair, reduction, n, reduce,  A, R, t;
 
 R:=function(a,b,s)
 	local i, mg;
 	i:=IntersectionIdealsOfNumericalSemigroup(a+s,b+s);
 	mg:=MinimalGenerators(i);
 	return List(mg, m->[m-a,m-b]);
-end;
-
-ker:=function(I)
-	local mg, s, r, i, j, n;
-	s:=AmbientNumericalSemigroupOfIdeal(I);
-	mg:=MinimalGenerators(I);
-	r:=[];
-	n:=Length(mg);
-	for i in [1..n] do
-		for j in [i+1..n] do
-			r:=Union(r,R(mg[i],mg[j],s));
-		od;
-	od;
-	return r;
 end;
 
 # improve to reducing all terms, not only the leading term
@@ -1337,3 +1323,40 @@ function(s,k)
 end
 
 );
+
+##################################################################
+##
+#O WittCoefficients(p,k)
+##
+## p is a univariate polynomial with integer coefficientas and 
+## p(1)=1. Then p(x)=\prod_{n\ge 0}(1-x^n)^{e_n}.
+## output is the list [e_1,..,e_k], and it is computed bu using 
+## [C-GS-HP-M]
+##################################################################
+InstallMethod(WittCoefficients,[IsUnivariatePolynomial, IsPosInt],
+function(p,k)
+    local e, s, divisors, j, a;
+
+    a:=CoefficientsOfUnivariatePolynomial(p);
+    if a[1]<> 1 then
+        Error("The value of the first argument in 1 must be 1");
+    fi;
+    
+    if not(IsSubset(Integers,a)) then
+        Error("The firs argument must be a polynomial with integer coefficients");
+    fi;
+
+    a:=Concatenation(a{[2..Length(a)]},List([Length(a)-1..k],_->0));
+    s:=[-a[1]];
+    for j in [2..k] do
+        s[j]:=-Reversed(a{[1..j-1]})*s{[1..j-1]}-j*a[j];
+    od;
+
+    e:=[];
+    for j in [1..k] do
+        divisors:=DivisorsInt(j);
+        e[j]:=1/j*s{divisors}*List(divisors, i->MoebiusMu(j/i));
+    od;
+
+    return e;
+end);

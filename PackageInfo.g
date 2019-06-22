@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "NumericalSgps",
 Subtitle := "A package for numerical semigroups",
-Version := "1.1.10 dev",
-Date := "06/11/2018", # dd/mm/yyyy format
+Version := "1.2.0",
+Date := "25/04/2019", # dd/mm/yyyy format
 License := "GPL-2.0-or-later",
 
 ##  Information about authors and maintainers.
@@ -102,6 +102,13 @@ rec(
   WWWHome       := "https://www.quendi.de/math"
 ),
 
+rec(
+  LastName      := "Maugeri",
+  FirstNames    := "Nicola",
+  IsAuthor      := false,
+  IsMaintainer  := false,
+  PostalAddress := "Università degli Studi di Catania"
+),
 
 rec(
   LastName      := "Moreno Ávila",

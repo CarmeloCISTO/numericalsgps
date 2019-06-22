@@ -29,36 +29,37 @@
 
 <Acknowledgements>
 
+
+The authors wish to thank the contributors of the package. A full list with the help received is available in Appendix <Ref Chap="ap:contrib"/>. We are also in debt with H. Schönemann, C. Söeger and M. Barakat for their fruitful advices concerning  SingularInterface, Singular, Normaliz, NormalizInterface and GradedModules.
+<P/> The maintainers want to thank the organizers of <C>GAPDays</C> in their several editions.
+<P/> The authors also thank the Centro de Servicios de Informática y Redes de Comunicaciones (CSIRC), Universidad de Granada, for providing the computing time, specially Rafael Arco Arredondo for installing this package and the extra software needed in alhambra.ugr.es, and Santiago Melchor Ferrer for helping in job submission to the cluster.
+<P/>
+The first and second authors warmly thank María Burgos for her support and help.
+<P/>
+<P/>
+<B>Funding</B>
+<P/>
+<P/>
 The first author's work was (partially) supported by the <E>Centro de Matemática da Universidade do
 Porto</E> (CMUP), financed by FCT (Portugal) through the programs POCTI
 (Programa Operacional "Ciência, Tecnologia, Inovação") and POSI (Programa
 Operacional Sociedade da Informação), with national and European Community
 structural funds and a sabbatical grant of FCT.
 <P/>
-The second author was supported by the projects MTM2004-01446, MTM2007-62346 and MTM2010-15595, the Junta de Andalucía group FQM-343, and FEDER founds.
+The second author was supported by the projects MTM2004-01446 and MTM2007-62346, the Junta de Andalucía group FQM-343, and FEDER founds.
 <P/>
 The third author acknowledges financial support of FCT and the POCTI program
 through a scholarship given by <E>Centro de Matemática da Universidade do Porto</E>.
-<P/>
-The authors wish to thank J. I. García-García and Alfredo Sánchez-R. Navarro for many helpful discussions and for helping in the programming of preliminary versions of some functions, and also to C. O'Neill, A. Sammartano, I. Ojeda, C. M. Moreno Ávila, A. Herrera-Poyatos and K. Stokes for their
-contributions (see Contributions Chapter). We are also in debt with S. Gutsche, M. Horn, H. Schönemann, C. Söeger and M. Barakat for their fruitful advices concerning 4ti2Interface, SingularInterface, Singular, Normaliz, NormalizInterface and GradedModules.
-<P/>
-The first and second authors warmly thank María Burgos for her support and help.
-<P/>
-<P/>
-<B>Concerning the mantainment:</B>
-<P/>
 <P/>
 The first author was (partially) supported by the FCT project PTDC/MAT/65481/2006 and also by the
 <E>Centro de Matemática da Universidade do
 Porto</E> (CMUP), funded by the European Regional Development Fund through the programme COMPETE and by the Portuguese Government through the FCT - Fundação para a Ciência e a Tecnologia under the project PEst-C/MAT/UI0144/2011.
 <P/>
-The second author was/is supported by the project MTM2014-55367-P, which is funded
-by Ministerio de Economía y Competitividad and the Fondo Europeo de Desarrollo Regional FEDER.
-<P/> Both maintainers want to acknowledge partial support by CMUP (UID/MAT/00144/2013), which is funded by FCT (Portugal) with national (MEC) and European structural funds through the programs FEDER, under the partnership agreement PT2020.
-<P/> Both maintainers are also supported by the project MTM2014-55367-P, which is funded by Ministerio de Economía y Competitividad and Fondo Europeo de Desarrollo Regional FEDER.
-<P/> The maintainers want to thank the organizers of <C>GAPDays</C> in their several editions.
-<P/> The authors also thank the Centro de Servicios de Informática y Redes de Comunicaciones (CSIRC), Universidad de Granada, for providing the computing time, specially Rafael Arco Arredondo for installing this package and the extra software needed in alhambra.ugr.es.
+Both maintainers were (partially) supported by the projects MTM2010-15595 and  MTM2014-55367-P, which were funded by Ministerio de Economía y Competitividad and the Fondo Europeo de Desarrollo Regional FEDER.
+<P/> Both maintainers want to acknowledge partial support by CMUP (UID/MAT/00144/2013 and UID/MAT/00144/2019), which is funded by FCT (Portugal) with national (MEC) and European structural funds through the programs FEDER, under the partnership agreement PT2020.
+<P/> Both maintainers are also partially supported by the project MTM2017-84890-P, which is funded by Ministerio de Economía y Competitividad and Fondo Europeo de Desarrollo Regional FEDER.
+<P/> The first author acknowledges a sabbatical grant from the FCT: SFRH/BSAB/142918/2018.
+
 </Acknowledgements>
 
 <Colophon>

@@ -167,6 +167,70 @@ DeclareGlobalFunction("IrreducibleMaximalElementsOfGoodSemigroup");
 ###############################################################
 DeclareGlobalFunction("GoodSemigroupByMaximalElements");
 
+#####################################################
+##
+#F ProjectionOfAGoodSemigroup:=function(S,num)
+## Given a good semigroup S it returns the num-th numerical semigroup projection
+#####################################################
+DeclareGlobalFunction("ProjectionOfGoodSemigroup");
+
+#####################################################
+##
+#F GenusOfAGoodSemigroup:=function(S)
+## Given a good semigroup S it returns its genus
+#####################################################
+DeclareGlobalFunction("GenusOfGoodSemigroup");
+DeclareAttribute( "Genus", IsGoodSemigroup);
+
+#####################################################
+##
+#F LengthOfAGoodSemigroup:=function(S)
+## Given a good semigroup S it returns its length
+#####################################################
+DeclareGlobalFunction("LengthOfGoodSemigroup");
+DeclareAttribute( "Length", IsGoodSemigroup);
+
+#####################################################
+#F AperySetOfAGoodSemigroup:=function(S)
+## Given a good semigroup S it returns a list with the elements of the Apery Set
+#####################################################
+DeclareGlobalFunction("AperySetOfGoodSemigroup");
+
+#####################################################
+#F LevelsOfTheAperySet:=function(S)
+## Given a good semigroup S it prints the number of levels and it returns a list
+# where the elements are the list of the level Apery Set
+#####################################################
+DeclareGlobalFunction("StratifiedAperySetOfGoodSemigroup");
+
+#####################################################
+#F AbsoluteIrreduciblesOfGoodSemigroup:=function(S)
+## Given a good semigroup S, the function returns the irreducible absolutes of S.
+#  These are the elements that generates S as semiring.
+#####################################################
+DeclareGlobalFunction("AbsoluteIrreduciblesOfGoodSemigroup");
+
+#####################################################
+#F TracksOfGoodSemigroup:=function(S)
+## Given a good semigroup S, the function returns the tracks of S.
+#####################################################
+DeclareGlobalFunction("TracksOfGoodSemigroup");
+
+###############################################################
+##
+#P IsLocal(S)
+## Determines if S is local
+###############################################################
+
+DeclareProperty("IsLocal",IsGoodSemigroup);
+
+
+###############################################################
+##
+#A Multiplicity(S)
+## Determines the multiplicity of S
+###############################################################
+DeclareAttribute("Multiplicity",IsGoodSemigroup);
 
 # ## FUNCTIONS ##
 
@@ -381,3 +445,4 @@ DeclareGlobalFunction("GoodSemigroupByMaximalElements");
 # ## good semigroup M
 # ###################################################
 # DeclareGlobalFunction("MinimalGoodGeneratingSystemOfGoodSemigroup");
+
