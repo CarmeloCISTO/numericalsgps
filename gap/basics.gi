@@ -735,14 +735,14 @@ InstallMethod( AperyListOfNumericalSemigroupWRTElement,
     if not BelongsToNumericalSemigroup(m,s) then
         Error("The second argument  must be an element of the first argument");
     else
-        msg := MinimalGeneratingSystemOfNumericalSemigroup(s);
+        msg := Generators(s);
         nonmults := Difference(msg,[m]);
         ret := ListWithIdenticalEntries(m,infinity);
 
-        ret[1] := 0;
-        for g in nonmults do
+        for g in Reversed(nonmults) do
             ret[(g mod m)+1] := g;
         od;
+        ret[1] := 0;
 
         curround := List(nonmults);
 
@@ -1103,8 +1103,10 @@ InstallMethod(DivisorsOfElementInNumericalSemigroup,
   local   elts;
 
   #the first n elements of S not greater than n
-  elts := FirstElementsOfNumericalSemigroup(n, S );
-
+  elts := Intersection([0..n], S );
+  if n=0 then 
+    return [0];
+  fi;
   return(Intersection(n - elts,elts));
 end);
 ########
@@ -1114,6 +1116,148 @@ InstallMethod(DivisorsOfElementInNumericalSemigroup,
   return(DivisorsOfElementInNumericalSemigroup(S,n));
 end);
 
+
+#########################################################################
+#F NumericalSemigroupByNuSequence(NuSeq)
+## Given a nu-sequence, compute the semigroup asociated to it.
+## Based on the code by Jorge Angulo, inspired in 
+## - Bras-Amorós, Maria Numerical semigroups and codes. 
+## Algebraic geometry modeling in information theory, 167–218, 
+## Ser. Coding Theory Cryptol., 8, World Sci. Publ., Hackensack, NJ, 2013
+#########################################################################
+InstallGlobalFunction(NumericalSemigroupByNuSequence,
+function(NuSeq)
+    local isNu, i, l, S, g, c, k, G, DTilde, cand, ncand, NuSequence;
+    if not(IsListOfIntegersNS(NuSeq)) then
+        Error("The argument must be a list of integers.");
+    fi;
+    #Some checks on sequence. This are only necesary Conditions for a Nu sequence
+    isNu:=true;
+    l:=Size(NuSeq);
+    if l>0 then
+        if not(NuSeq[1]=1) then isNu:=false; fi;
+        if l>1 then
+            if not(NuSeq[2]=2) then isNu:=false; fi;
+        else #If nu sequece is [1], then the semigroup is N
+            return NumericalSemigroup(1);
+        fi;
+        for i in [1..l] do
+            if not(NuSeq[i]<=i) then isNu:=false; fi;
+        od;
+    fi;
+    if not isNu then
+        Error("The argument is not a nu-sequence.");
+    fi;
+    #We compute numerical semigroup from NuSeq.
+    S:=[];
+    #We first need to compute k, greatest i such that nu_i=nu_{i+1}
+    k:=1;
+    for i in [1..(l-1)] do
+        if NuSeq[i]=NuSeq[i+1] then
+        k:=i;
+        fi;
+    od;
+    #From k on, every entry should increas by one
+    if First([k+1..(l-1)],i->not(NuSeq[i]+1=NuSeq[i+1]))<>fail then
+        Error("The argument is not a nu-sequence.");
+    fi;
+    #With k, we can calculate both Genus and Conductor
+    g:=k+1-NuSeq[k];
+    c:=(k+g+1)/2;
+
+    #We keep track of gaps.
+    #Note that 1 is gap, since the trivial semigroup was already considered.
+    G:=[1,c-1];
+
+    #This auxiliar function computes the number of gaps, l, i<l<c-1 such that:
+    #c-1+i-l is also a Gap
+    DTilde:=function(i,c,G)
+        local l, D;
+        D:=0;
+        for l in [(i+1)..(c-2)] do
+        if l in G then
+            if (c+i-l-1) in G then D:=D+1; fi;
+        fi;
+        od;
+        return D;
+    end;
+
+    for i in Reversed([2..(c-1)]) do
+        if NuSeq[c+i-g]=(c+i-2*g+DTilde(i,c,G)) then
+        Add(S,i,1);
+        else
+        Add(G,i);
+        fi;
+    od;
+    #Now, we determine small elements of the semigroup.
+    Add(S,0,1); # O is always n the semigroup.
+    Add(S,c); # Conductor is always n the semigroup.
+
+    NuSequence:=S->List([1..2*Conductor(S)-Genus(S)],i->Length(DivisorsOfElementInNumericalSemigroup(S[i],S)));
+    cand:= NumericalSemigroupBySmallElements(Set(S));
+    ncand:=NuSequence(cand);
+    if ncand<>NuSeq{[1..Length(ncand)]} then
+        Error("The sequence determines a semigroup, but it is not a nu-sequence");
+    fi;
+    return cand;
+end);
+
+#########################################################################
+#F NumericalSemigroupByTauSequence(TauSeq)
+## Given a tau-sequence, compute the semigroup asociated to it.
+## Based on the code by Jorge Angulo, inspired in 
+## - Bras-Amorós, Maria Numerical semigroups and codes. 
+## Algebraic geometry modeling in information theory, 167–218, 
+## Ser. Coding Theory Cryptol., 8, World Sci. Publ., Hackensack, NJ, 2013
+#########################################################################
+InstallGlobalFunction(NumericalSemigroupByTauSequence,
+function(TauSeq)
+  local i, j, k, l, FoundNewMin, g, c, S, aux, min,small;
+    if not(IsListOfIntegersNS(TauSeq)) then
+        Error("The argument must be a list of integers.");
+    fi;
+  #The first step is to compute the minumun integer, k, such that for all i,
+  #Tau_{k+2i}=Tau_{k+2i+1} and Tau_{k+2i+2}=Tau_{k+2i+1}+1.
+  l:=Length(TauSeq);
+  k:=l-1;
+  for j in Reversed([1..l]) do
+    FoundNewMin:=true;
+    for i in [0..Int((l-j)/2-2)] do
+
+      FoundNewMin:=(TauSeq[j+2*i]=TauSeq[j+2*i+1]) and
+        (TauSeq[j+2*i+1]+1=TauSeq[j+2*i+2]) ;
+
+      if not FoundNewMin then break; fi; #Break out of the inner loop
+    od;
+    if FoundNewMin then k:=j; fi;
+  od;
+  #With this, we have the conductor and genus
+  c:=k-TauSeq[k];
+  g:=k-2*TauSeq[k]-1;
+
+  #Now, we compute the semigrup.
+  #We need initialize it to a list of lenght l
+  S:=[];
+  for i in [1..(c-g)] do Add(S,0); od; #The first values don't matter now, but will matter later
+  for i in [(c-g)..l] do Add(S,i+g); od; #The values after the conductor are tivial
+
+  for i in Reversed([2..c-g]) do
+    #Follow the procedure, as outlined in the proof by Maria Brass
+    aux:=Positions(TauSeq,i-1);
+    min:=1;
+    for j in [1..Length(aux)] do
+        if S[aux[min]]>(S[aux[j]]) then
+          min:=j;
+        fi;
+    od;
+    S[i]:=S[aux[min]]/2;
+  od;
+  small:=S{[1..(c-g+1)]};
+  if not(RepresentsSmallElementsOfNumericalSemigroup(small)) then
+    Error("The argument is not the tau-sequence of a numerical semigroup.");
+  fi;
+  return NumericalSemigroupBySmallElementsNC(small);
+end);
 
 #############################################################################
 ##

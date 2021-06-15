@@ -2,6 +2,25 @@
                    | CHANGES of the numericalsgps package |
                    ----------------------------------------
 
+#======
+1.2.2 -> 1.2.2 dev
+- Added IsComplementOfIntegralIdeal and IdealByDivisorClosedSet
+- ViewString for affine semigroups now considers singular in a single generator or minimal generator
+- Decomposition of ideals into irreducibles (by Jorge Angulo)
+- NumericalSemgigroupByNuSequence and NumericalSemgigroupByTauSequence (by Jorge Angulo)
+
+#======
+1.2.1 -> 1.2.2
+- Bug fix for DivisorsOfElementInNumericalSemigroup(0,s).
+- Bug fix in proportionally modular affine semigroups of dimenstion two
+- Added IsSubset for ideals of numerical semigroups
+- Disabled GradedModules
+
+#=======
+1.2.0 -> 1.2.1
+- Changes in tests to fit new version of gapdays
+- Code for ideals of affine semigroups by Helena Martin Cruz
+
 #=======
 1.1.0 -> 1.2.0 * brief summary *
 * This is just a summary of the changes made from the major release 1.1.0 to the major release 1.2.0.

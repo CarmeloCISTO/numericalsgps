@@ -270,8 +270,10 @@ gap> Generators(a);
 [  ]
 gap> a:=AffineSemigroupByPMInequality([3,1],5,[1,2]);
 <Affine semigroup>
-gap> Generators(a);
-[ [ 0, 1 ], [ 2, 0 ], [ 5, 0 ], [ 1, 2 ], [ 3, 1 ] ]
+gap> [ 3, 1 ] in a;
+true
+gap> [ 1, 1 ] in a;
+false
 gap> Gaps(a);
 [ [ 1, 0 ], [ 3, 0 ], [ 1, 1 ] ]
 
@@ -281,7 +283,7 @@ gap> a:=AffineSemigroupByEquations([[1,-1]],[]);
 gap> Display(a);
 <Affine semigroup>
 gap> ViewString(a);
-"<Affine semigroup>"
+"Affine semigroup"
 gap> [1,1] in a;
 true
 gap> [0,2] in a;
@@ -293,7 +295,7 @@ gap> a:=AffineSemigroupByInequalities([[2,-1],[-1,3]]);
 gap> Print(a);
 AffineSemigroupByInequalities( [ [ -1, 3 ], [ 2, -1 ] ] )
 gap> ViewString(a);
-"<Affine semigroup>"
+"Affine semigroup"
 gap> Display(a);
 <Affine semigroup>
 gap> [1,1] in a;
@@ -1051,8 +1053,8 @@ gap> SmallElementsOfNumericalSemigroup(u);
 
 gap> N:=NumericalSemigroup(1);;
 gap> s:=MultipleOfNumericalSemigroup(N,4,20);;
-gap> SmallElements(s);
-[ 0, 4, 8, 12, 16, 20 ]
+gap> SmallElements(s)=[ 0, 4, 8, 12, 16, 20 ];
+true
 
 gap> ns1 := NumericalSemigroup(5,7);;
 gap> ns2 := NumericalSemigroup(7,11,12);;
@@ -1324,9 +1326,17 @@ false
 gap> IsIntegralIdealOfNumericalSemigroup(10+s);
 true
 
+gap> s:=NumericalSemigroup(10,11,15,19);;
+gap> i:=[20,21,25]+s;;
+gap> d:=Difference(0+s,i);;
+gap> IsComplementOfIntegralIdeal(d,s);
+true
+gap> i=IdealByDivisorClosedSet(d,s);
+true
+
 gap> I:=[3,5,9]+NumericalSemigroup(2,11);;
-gap> SmallElements(I);
-[ 3, 5, 7, 9, 11, 13 ]
+gap> SmallElements(I)=[ 3, 5, 7, 9, 11, 13 ];
+true
 gap> SmallElements(I) = SmallElementsOfIdealOfNumericalSemigroup(I);
 true
 gap> J:=[2,11]+NumericalSemigroup(2,11);;
@@ -1377,6 +1387,15 @@ gap> MultipleOfIdealOfNumericalSemigroup(2,I) = 2*I;
 true
 gap> MinimalGeneratingSystemOfIdealOfNumericalSemigroup(2*I);
 [ 0, 1, 2 ]
+
+gap> s:=NumericalSemigroup(3,5,7);;
+gap> I:=2+s;;
+gap> J:=3+s;;
+gap> Generators(Union(I,J));
+[ 2, 3 ]
+gap> Generators(Intersection(I,J));
+[ 8, 9, 10, 11 ]
+
 
 gap> S:=NumericalSemigroup(14, 15, 20, 21, 25);;
 gap> I:=[0,1]+S;;
@@ -1459,6 +1478,25 @@ gap> TypeSequence(s);
 gap> s:=NumericalSemigroup(4,6,11);;
 gap> TypeSequenceOfNumericalSemigroup(s);
 [ 1, 1, 1, 1, 1, 1, 1 ]
+
+
+gap> s:=NumericalSemigroup(3,5,7);;
+gap> i:=[4,5]+s;;
+gap> zc:=IrreducibleZComponents(i);
+[ <Ideal of numerical semigroup>, <Ideal of numerical semigroup> ]
+gap> List(zc,MinimalGenerators);
+[ [ 2, 4 ], [ -2, 0 ] ]
+gap> i=Intersection(zc);
+true
+
+gap> s:=NumericalSemigroup(3,5,7);;
+gap> i:=10+s;;
+gap> di:=DecomposeIntegralIdealIntoIrreducibles(i);
+[ <Ideal of numerical semigroup>, <Ideal of numerical semigroup> ]
+gap> List(di,MinimalGenerators);
+[ [ 8, 10 ], [ 10, 12 ] ]
+gap> i=Intersection(di);
+true
 
 gap> I:=[6,9,11]+NumericalSemigroup(6,9,11);;
 gap> List([1..7],n->HilbertFunctionOfIdealOfNumericalSemigroup(n,I));
@@ -2093,6 +2131,27 @@ gap> DivisorsOfElementInNumericalSemigroup(s,20);
 [ 0, 5, 10, 15, 20 ]
 gap> DivisorsOfElementInNumericalSemigroup(20,s);
 [ 0, 5, 10, 15, 20 ]
+gap> DivisorsOfElementInNumericalSemigroup(0,s);
+[ 0 ]
+
+gap> NuSequence:=S->List([1..2*Conductor(S)-Genus(S)], i->Length(DivisorsOfElementInNumericalSemigroup(S[i],S)));;
+gap> s:=NumericalSemigroup(5,7,11);;
+gap> NuSequence(s);
+[ 1, 2, 2, 3, 2, 4, 3, 4, 4, 6, 4, 6, 5, 8, 9, 8, 9, 10, 12, 12 ]
+gap> s=NumericalSemigroupByNuSequence(last);
+true
+
+gap> TauNS := function(i,S)
+>    local d, D, si;
+>    D:=DivisorsOfElementInNumericalSemigroup(S[i+1],S);
+>    si:=S[i+1];
+>    d:=Maximum(Intersection(D,[0..Int(si/2)]));
+>    return NumberElement_NumericalSemigroup(S,d)-1;
+> end;;
+gap> TauSequence:=S->List([0..(2*Conductor(S)-Genus(S)+1)], i->TauNS(i,S));;
+gap> s:=NumericalSemigroup(6,7,8,17);;
+gap> s=NumericalSemigroupByTauSequence(TauSequence(s));
+true
 
 gap> S := NumericalSemigroup(7,9,17);;
 gap> FengRaoDistance(S,6,100);
@@ -2275,16 +2334,10 @@ true
 
 gap> s:=AffineSemigroupByPMInequality([0, 1, 1, 0, -1], 4, [1, 0, -2, -3, 1]);
 <Affine semigroup>
-gap> MinimalGenerators(s);
-[ [ 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 3 ], [ 0, 0, 0, 1, 4 ], [ 0, 0, 0, 2, 7 ], 
-  [ 0, 0, 0, 4, 12 ], [ 0, 0, 1, 0, 4 ], [ 0, 0, 1, 0, 5 ], [ 0, 0, 1, 1, 5 ],
-  [ 0, 0, 2, 0, 5 ], [ 0, 0, 2, 0, 6 ], [ 0, 0, 3, 0, 7 ], [ 0, 0, 4, 0, 8 ], 
-  [ 0, 1, 0, 0, 1 ], [ 0, 1, 0, 1, 4 ], [ 0, 1, 0, 3, 9 ], [ 0, 1, 1, 0, 2 ], 
-  [ 0, 2, 0, 0, 1 ], [ 0, 2, 0, 2, 6 ], [ 0, 3, 0, 1, 3 ], [ 0, 4, 0, 0, 0 ], 
-  [ 1, 0, 0, 0, 0 ], [ 1, 0, 0, 0, 1 ], [ 1, 0, 0, 1, 3 ], [ 1, 0, 0, 3, 8 ], 
-  [ 1, 0, 1, 0, 1 ], [ 1, 1, 0, 0, 0 ], [ 1, 1, 0, 2, 5 ], [ 1, 2, 0, 1, 2 ], 
-  [ 2, 0, 0, 2, 4 ], [ 2, 1, 0, 1, 1 ], [ 2, 3, 1, 0, 0 ], [ 3, 0, 0, 1, 0 ], 
-  [ 3, 0, 1, 0, 0 ], [ 4, 2, 2, 0, 0 ], [ 6, 1, 3, 0, 0 ], [ 8, 0, 4, 0, 0 ] ]
+gap> [ 3, 0, 0, 4, 12 ] in s;
+true
+gap> [ 3, 0, 0, 4, 1 ] in s;
+false
 
 gap> gaps := [[1,0,0,0],[1,1,0,0],[2,0,0,0],[2,1,0,0],[5,0,0,0]];;
 gap> a1 := AffineSemigroup("gaps", gaps );
@@ -2417,7 +2470,7 @@ gap> BasisOfGroupGivenByEquations([[0,0,1],[2,-1,-3]],[2]);
 gap> a1:=AffineSemigroup([[2,0],[0,2]]);
 <Affine semigroup in 2 dimensional space, with 2 generators>
 gap> a2:=AffineSemigroup([[1,1]]);
-<Affine semigroup in 2 dimensional space, with 1 generators>
+<Affine semigroup in 2 dimensional space, with 1 generator>
 gap> GluingOfAffineSemigroups(a1,a2);
 <Affine semigroup in 2 dimensional space, with 3 generators>
 gap> Generators(last);
@@ -2524,6 +2577,63 @@ gap> OmegaPrimality(a);
 2
 gap> OmegaPrimalityOfAffineSemigroup(a);
 2
+
+# ideals of affine semigroups
+
+gap> a:=AffineSemigroup([2,0],[0,2]);;
+gap> i:=IdealOfAffineSemigroup([[1,0],[0,3]],a);
+<Ideal of affine semigroup>
+gap> [[1,0],[0,3]]+a=i;
+true
+gap> [0,1]+a;
+<Ideal of affine semigroup>
+gap> IsSubset(i,[1,0]+a);
+true
+gap> IsSubset([1,0]+a,i);
+false
+gap> IsIdealOfAffineSemigroup(i);
+true
+gap> i:=[[1,0],[3,0]]+AffineSemigroup([2,0],[0,2]);;
+gap> Generators(i);
+[ [ 1, 0 ], [ 3, 0 ] ]
+gap> MinimalGenerators(i);
+[ [ 1, 0 ] ]
+gap> AmbientAffineSemigroupOfIdeal(i)=a;
+true
+gap> IsIntegral([1,0]+a);
+false
+gap> IsIntegral([2,0]+a);
+true
+gap> i:=[2,0]+a;;
+gap> [2,0] in i;
+true
+gap> [4,4] in i;
+true
+gap> [1,2] in i;
+false
+gap> j:=[[1,0],[0,1]]+a;;
+gap> MinimalGenerators(i+j);
+[ [ 2, 1 ], [ 3, 0 ] ]
+gap> j:=[[1,0],[0,1]]+a;;
+gap> MinimalGenerators(2*j);
+[ [ 0, 2 ], [ 1, 1 ], [ 2, 0 ] ]
+gap> j:=[[1,0],[0,1]]+a;;
+gap> MinimalGenerators([2,2]+j);
+[ [ 2, 3 ], [ 3, 2 ] ]
+gap> i:=[2,0]+a;;
+gap> j:=[[1,0],[0,1]]+a;;
+gap> MinimalGenerators(Union(i,j));
+[ [ 0, 1 ], [ 1, 0 ], [ 2, 0 ] ]
+gap> a:=AffineSemigroup([1,0],[0,1]);;
+gap> i:=[2,0]+a;;
+gap> j:=[[1,0],[0,1]]+a;;
+gap> MinimalGenerators(Intersection(i,j));
+[ [ 2, 0 ] ]
+gap> a:=AffineSemigroup([2,0],[0,2]);;
+gap> MinimalGenerators(MaximalIdeal(a));
+[ [ 0, 2 ], [ 2, 0 ] ]
+
+
 
 ##good-semigroups.xml
 
@@ -2835,8 +2945,7 @@ gap> TracksOfGoodSemigroup(S);
   [ [ 33, infinity ], [ infinity, 16 ] ], [ [ 33, infinity ] ] ]
 
 ##dot.xml
-gap> br:=BinaryRelationByElements(Domain([1,2]), [DirectProductElement([1,2])]);
-<general mapping: <object> -> <object> >
+gap> br:=BinaryRelationByElements(Domain([1,2]), [DirectProductElement([1,2])]);;
 gap> Print(DotBinaryRelation(br));
 digraph  NSGraph{rankdir = TB; edge[dir=back];
 1 [label="1"];
@@ -2845,18 +2954,21 @@ digraph  NSGraph{rankdir = TB; edge[dir=back];
 }
 
 gap> s:=NumericalSemigroup(3,5,7);;
-gap> HasseDiagramOfNumericalSemigroup(s,[1,2,3]);
-<general mapping: <object> -> <object> >
+gap> IsHasseDiagram(HasseDiagramOfNumericalSemigroup(s,[1,2,3]));
+true
 
 gap> s:=NumericalSemigroup(3,5,7);;
-gap> HasseDiagramOfBettiElementsOfNumericalSemigroup(s);
-<general mapping: <object> -> <object> >
+gap> hb:=HasseDiagramOfBettiElementsOfNumericalSemigroup(s);;
+gap> List(Source(hb));
+[ 10, 12, 14 ]
 
 gap> s:=NumericalSemigroup(3,5,7);;
-gap> HasseDiagramOfAperyListOfNumericalSemigroup(s);
-<general mapping: <object> -> <object> >
-gap> HasseDiagramOfAperyListOfNumericalSemigroup(s,10);
-<general mapping: <object> -> <object> >
+gap> h:=HasseDiagramOfAperyListOfNumericalSemigroup(s);;
+gap> Source(h)=Set(AperyList(s));
+true
+gap> h:=HasseDiagramOfAperyListOfNumericalSemigroup(s,10);;
+gap> Source(h)=Set(AperyList(s,10));
+true
 
 #gap> s:=NumericalSemigroup(4,6,9);;
 #gap> Print(DotTreeOfGluingsOfNumericalSemigroup(s));

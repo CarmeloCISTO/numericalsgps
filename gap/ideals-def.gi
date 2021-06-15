@@ -158,14 +158,15 @@ end);
 #M Methods for the comparison of ideals of a numerical semigroup.
 ##
 InstallMethod( \=,
-        "for two ideals of a numerical semigroup",
+        "for two ideals of numerical semigroups",
         [IsIdealOfNumericalSemigroup,
          IsIdealOfNumericalSemigroup],
         function(I, J )
 
     if not AmbientNumericalSemigroupOfIdeal(I)
        = AmbientNumericalSemigroupOfIdeal(J) then
-        Error("The ambient numerical semigroup must be the same for both ideals.");
+        #Error("The ambient numerical semigroup must be the same for both ideals.");
+        return false;
     fi;
     if HasMinimalGeneratingSystemOfIdealOfNumericalSemigroup(I) and HasMinimalGeneratingSystemOfIdealOfNumericalSemigroup(J) then
         return MinimalGeneratingSystemOfIdealOfNumericalSemigroup(I)
@@ -186,6 +187,20 @@ InstallMethod( \<,
     return(SmallElementsOfIdealOfNumericalSemigroup(I) < SmallElementsOfIdealOfNumericalSemigroup(J));
 end );
 
+# inclusion
+
+InstallMethod(IsSubset, 
+    "for ideals of affine semigroups",
+        [IsIdealOfNumericalSemigroup,
+         IsIdealOfNumericalSemigroup],
+    function(I, J)
+
+    if not AmbientNumericalSemigroupOfIdeal(I)
+       = AmbientNumericalSemigroupOfIdeal(J) then
+        return false;
+    fi;
+    return ForAll(MinimalGenerators(J), j-> j in I);
+end);
 
 #############################################################################
 ##
@@ -935,6 +950,12 @@ InstallOtherMethod( \+, "for an integer and an ideal of a numerical semigroup", 
         function(k,I)
     return(TranslationOfIdealOfNumericalSemigroup(k, I));
 end);
+InstallOtherMethod( \+, "for an ideal of a numerical semigroup and an integer", true,
+        [IsIdealOfNumericalSemigroup, 
+        IsInt and IsAdditiveElement], 0,
+        function(I,k)
+    return(TranslationOfIdealOfNumericalSemigroup(k, I));
+end);
 
 
 
@@ -973,6 +994,22 @@ InstallGlobalFunction(IntersectionIdealsOfNumericalSemigroup, function(I, J)
 
     return(IdealOfNumericalSemigroup(l,AmbientNumericalSemigroupOfIdeal(I)));
 
+end);
+
+#############################################################################
+##
+#O  Union(I,J)
+##
+##  Given two ideals <I> and <J> of a numerical semigroup S
+##  returns their union
+##
+#############################################################################
+InstallOtherMethod(Union2, [IsIdealOfNumericalSemigroup, IsIdealOfNumericalSemigroup], 
+function(I,J)
+  if not(AmbientNumericalSemigroupOfIdeal(I)=AmbientNumericalSemigroupOfIdeal(J)) then
+    Error("Both ideals must be ideals of the same semigroup");
+  fi;
+  return Union(MinimalGenerators(I),MinimalGenerators(J))+AmbientNumericalSemigroupOfIdeal(I);
 end);
 
 
@@ -1174,4 +1211,69 @@ InstallOtherMethod(\{\}, [IsIdealOfNumericalSemigroup,IsList],
     function(i,l)
         return List(l,n->i[n]);
     end
+);
+
+
+########################################################################
+##
+#O IrreducibleZComponents(I)
+##
+## I is an ideal of a numerical semigroup
+## The output is the list of irreducible Z-components of the ideal
+## There are exactly t(I) (type of I) Z-components and I is the 
+## intersection of them
+## See Proposition 24 in A. Assi, M. D'Anna, P. A. García-Sánchez, 
+## Numerical semigroups and applications, Second edition, 
+## RSME Springer series 3, Springer, Switzerland, 2020.
+########################################################################
+InstallMethod(IrreducibleZComponents,
+    "Irreducible Z-components for ideals of numerical semigroups",
+    [IsIdealOfNumericalSemigroup],
+function(I)
+    local K, MG, output, g, S;
+    S:=AmbientNumericalSemigroupOfIdeal(I);
+    K:=CanonicalIdeal(S);
+    MG:=K-I;
+    MG:=MinimalGenerators(MG);
+    output:=[];
+    for g in MG do
+      Add(output, -g+K);
+    od;
+    return output;
+end
+);
+
+
+########################################################################
+##
+#O DecomposeIntegralIdealIntoIrreducibles(i)
+##
+## i is an integral (proper) ideal of a numerical semigroup S
+## The output is a list of irreducible ideals of S, such that its 
+## intersection is the unique irredundant decompostion of i into 
+## proper irreducible ideals
+## The calculation is performed using Theorem 4 in 
+## A. Assi, M. D'Anna, P. A. García-Sánchez, 
+## Numerical semigroups and applications, Second edition, 
+## RSME Springer series 3, Springer, Switzerland, 2020.
+########################################################################
+InstallMethod(DecomposeIntegralIdealIntoIrreducibles,
+    "for integral (proper) ideals of numerical semigroups",
+    [IsIdealOfNumericalSemigroup],
+function(I)
+    local M,Dif, XI,output,x,d,S;
+    if not(IsIntegral(I)) then
+        Error("The argument must be an integral ideal (proper ideal)");
+    fi;
+    S:=AmbientNumericalSemigroupOfIdeal(I);
+    M:=MaximalIdeal(S);
+    Dif:=I-M;
+    XI:=Difference(Intersection(0+S,Dif),I);
+    output:=[];
+    for x in XI do
+        d:=DivisorsOfElementInNumericalSemigroup(x,S);
+        Add(output,IdealByDivisorClosedSet(d,S));
+    od;
+    return output;
+end    
 );

@@ -5,6 +5,8 @@
 #W                          Jose Morais <josejoao@fc.up.pt>
 ##
 ##
+#H  @(#)$Id: read.g,v 1.2.2 $
+##
 #Y  Copyright 2005 by Manuel Delgado,
 #Y  Pedro A. Garcia-Sanchez and Jose Joao Morais
 #Y  We adopt the copyright regulations of GAP as detailed in the
@@ -46,6 +48,7 @@ ReadPackage( "numericalsgps", "gap/good-ideals.gi");
 SetInfoLevel(InfoNumSgps,1);
 ReadPackage( "numericalsgps", "gap/affine-def.gi" );
 ReadPackage( "numericalsgps", "gap/affine.gi" );
+ReadPackage( "numericalsgps", "gap/ideals-affine.gi" );
 ##
 ## obsolet
 ##
@@ -60,6 +63,7 @@ ReadPackage( "numericalsgps", "gap/dot.gi" );
 
 if NumSgpsCanUseNI then
     ReadPackage("numericalsgps", "gap/affine-extra-ni.gi");
+    ReadPackage("numericalsgps", "gap/ideals-extra-ni.gi");
     Info(InfoNumSgps,1,"Loaded interface to Normaliz (NormalizInterface)");
 fi;
 if NumSgpsCanUse4ti2 then
@@ -90,23 +94,23 @@ else
         ReadPackage( "numericalsgps", "gap/polynomials-extra-s.gi" );
         Info(InfoNumSgps,1,"Loaded interface to Singular (Singular)");
         #GBASIS:= SINGULARGBASIS;
-        # if NumSgpsCanUse4ti2 then
-        #   ReadPackage("numericalsgps","gap/apery-extra-4ti2i-sing.gi");
-        # fi;
+        #if NumSgpsCanUse4ti2 then
+        #  ReadPackage("numericalsgps","gap/apery-extra-4ti2i-sing.gi");
+        #fi;
         NumSgpsWarnUseSingular:=false;
-    else
-        if NumSgpsCanUseGradedModules then
-            #NumSgpsRationals:=HomalgFieldOfRationalsInSingular();
-            ReadPackage("numericalsgps", "gap/affine-extra-gm.gi");
-            Info(InfoNumSgps,1,"Loaded interface to Singular (through GradedModules)");
-            NumSgpsWarnUseSingular:=false;
-        fi;
+    # else
+    #     if NumSgpsCanUseGradedModules then
+    #         #NumSgpsRationals:=HomalgFieldOfRationalsInSingular();
+    #         ReadPackage("numericalsgps", "gap/affine-extra-gm.gi");
+    #         Info(InfoNumSgps,1,"Loaded interface to Singular (through GradedModules)");
+    #         NumSgpsWarnUseSingular:=false;
+    #     fi;
     fi;
 fi;
 
 if NumSgpsWarnUseSingular then
     Info(InfoNumSgps,2,"Please load package SingularInterface or singular (not both)");
-    Info(InfoNumSgps,2,"or GradedModules to have extended functionalities.");
+    # Info(InfoNumSgps,2,"or GradedModules to have extended functionalities.");
 fi;
 
 

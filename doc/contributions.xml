@@ -250,5 +250,16 @@ He also helped in preliminary versions of the following functions.
 
 </Section>
 
+<Section><Heading>Functions implemented by H. Martín Cruz</Heading>
+Helena helped in the implementation of the code for ideals of affine semigroups <Ref Sect="sec:ideals-affine"/>
+
+</Section>
+
+<Section><Heading>Functions implemented by J. Angulo Rodríguez</Heading>
+Jorge implemented the code corresponding to decompositions of ideals into irreducibles <Ref Sect="sec:decomposition-irreducibles"/>. He also implemented <Ref Func="NumericalSemigroupByNuSequence"/> and <Ref Func="NumericalSemigroupByTauSequence"/>.
+
+
+</Section>
+
 
 </Appendix>
